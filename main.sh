@@ -24,3 +24,5 @@ mysql_database=$6
 
 scp "$remote_userid"@"$remote_server":"$remote_file" .
 
+filename=$(basename  $remote_file)
+echo $filename
