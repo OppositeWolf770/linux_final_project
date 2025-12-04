@@ -2,6 +2,7 @@
 
 # Parameters
 transactions_file=$1
+state_column=12
 
 # Validate input
 if [ -z "$transactions_file" ]; then
@@ -13,9 +14,19 @@ if [ ! -f "$transactions_file" ]; then
     echo "Error: Transaction file does not exist: $transactions_file"
 fi
 
-gawk -F',' '
+# If state field contains invalid values, move to exceptions_file. Otherwise, print as normal
+gawk -v state_field=$state_column '
+    BEGIN {
+        FS=","
+        OFS=","
+    }
+
     {
-        print tolower($0)
+        if ($state_field == "" || $12 == "na") {
+            print $0 >> "exceptions.csv"
+        } else {
+            print $0
+        }
     }
 ' "$transactions_file" > "${transactions_file}.tmp"
 

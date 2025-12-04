@@ -1,31 +1,39 @@
 #!/bin/bash
 
 # Parameters
-filename=$1
+transactions_file=$1
+gender_column=5
 
-# Temporary file to modify input file
-temp="${filename}.tmp"
+# Validate input
+if [ -z "$transactions_file" ]; then
+    echo "Error: Transaction file not provided"
+    exit 1
+fi
+
+if [ ! -f "$transactions_file" ]; then
+    echo "Error: Transaction file does not exist: $transactions_file"
+fi
 
 # Run gawk script to change gender field
 # $5: Gender column
-gawk '
-BEGIN {
-    FS=","
-    OFS=","
-}
-
-{
-    if ($5 == "1" || $5 == "female" || $5 == "f") {
-        $5 = "f"
-    } else if ($5 == "0" || $5 == "male" || $5 == "m") {
-        $5 = "m"
-    } else {
-        $5 = "u"
+gawk -v gender_column=$gender_column '
+    BEGIN {
+        FS=","
+        OFS=","
     }
 
-    print
-}
-' "$filename" > "$temp"
+    {
+        if ($gender_column == "1" || $gender_column == "female" || $gender_column == "f") {
+            $gender_column = "f"
+        } else if ($gender_column == "0" || $gender_column == "male" || $gender_column == "m") {
+            $gender_column = "m"
+        } else {
+            $gender_column = "u"
+        }
+
+        print
+    }
+' "$transactions_file" > "${transactions_file}.tmp"
 
 # Move temp file to input file
-mv "$temp" "$filename"
+mv "${transactions_file}.tmp" "$transactions_file"

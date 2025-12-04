@@ -13,11 +13,5 @@ if [ ! -f "$transactions_file" ]; then
     echo "Error: Transaction file does not exist: $transactions_file"
 fi
 
-gawk -F',' '
-    {
-        print tolower($0)
-    }
-' "$transactions_file" > "${transactions_file}.tmp"
-
-# Move temp file to input file
-mv "${transactions_file}.tmp" "$transactions_file"
+# Remove the dollar sign from the transactions file
+sed -i 's/\$//g' "$transactions_file"
