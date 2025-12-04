@@ -1,11 +1,13 @@
 #!/bin/bash
 
 # Parameters
-remote_server=$1
-remote_userid=$2
-remote_file=$3
+private_key=$1
+remote_server=$2
+remote_userid=$3
+remote_file=$4
 
-scp "$remote_userid"@"$remote_server":"$remote_file" .
+# Copy the remote file from the SSH server to the current working directory
+scp -i "$private_key" "$remote_userid"@"$remote_server":"$remote_file" .
 
 # Get the filename from the full path of the remote file
 filename="${remote_file##*/}"
