@@ -15,34 +15,35 @@ if [ ! -f "$transaction_file" ]; then
 fi
 
 gawk '
-
 BEGIN {
     FS=","
     OFS=","
-    prev_total = 0
-}
 
-NR > 1 {
-    # If the previous customerID matches current customerID
-    if (prev == $1) {
-        # Increase previous total
-        prev_total = prev_total + prev_amt
-
-    # Otherwise
-    } else {
-        # Add record to output file
-        printf "%s,%s,%d,%s,%s,%f\n", prev, prev_state, prev_zip, prev_lastname, prev_firstname, prev_total
-
-        # Reset previous total
-        prev_total = 0
-    }
+    # Format for summary records
+    output_pattern="%s,%s,%d,%s,%s,%.2f\n"
 }
 
 {
+    # If the previous customerID matches current customerID
+    if (prev == $1) {
+        # Increase previous total by current amount
+        prev_total = prev_total + $6
+
+    # Otherwise if not on first line
+    } else if (NR > 1) {
+        # Add record to output file
+        printf output_pattern, prev, prev_state, prev_zip, prev_lastname, prev_firstname, prev_total
+
+        # Reset previous total to current amount
+        prev_total = $6
+    # Otherwise if on first line
+    } else {
+        # Initialize previous total
+        prev_total = $6
+    }
+
     # Update previous customer information with current customer information
-    # (Initialize if on first line)
     prev = $1               # CustomerID
-    prev_amt = $6           # Purchase Amount
     prev_state = $12        # State
     prev_zip = $13          # Zip Code
     prev_lastname = $3      # Last Name
@@ -50,11 +51,8 @@ NR > 1 {
 }
 
 END {
-    # Increase previous total
-    prev_total = prev_total + prev_amt
-
     # Add final record to output file
-    printf "%s,%s,%d,%s,%s,%f\n", prev, prev_state, prev_zip, prev_lastname, prev_firstname, prev_total
+    printf output_pattern, prev, prev_state, prev_zip, prev_lastname, prev_firstname, prev_total
 }
 
 ' "$transaction_file" > "$summary_file"

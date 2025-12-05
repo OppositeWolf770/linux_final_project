@@ -15,7 +15,7 @@ if [ ! -f "$transaction_file" ]; then
 fi
 
 # Sort by customerID field
-sort -t',' -k1,1 -o "$new_transaction_file" "$transaction_file"
+sort -t, -k1,1 -o "$new_transaction_file" "$transaction_file"
 
 # Remove the old transaction file from the working directory
 rm "$transaction_file"
