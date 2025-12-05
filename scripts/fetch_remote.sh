@@ -10,7 +10,7 @@ remote_file=$4
 scp -i "$private_key" "$remote_userid"@"$remote_server":"$remote_file" .
 
 # Get the filename from the full path of the remote file
-filename="${remote_file##*/}"
+transaction_file="${remote_file##*/}"
 
 # "Return" the filenane of the remote file
-echo "$filename"
+echo "$transaction_file"

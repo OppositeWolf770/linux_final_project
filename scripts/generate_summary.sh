@@ -2,6 +2,7 @@
 
 # Parameters
 transaction_file=$1
+summary_file="summary.csv"
 
 # Validate input
 if [ -z "$transaction_file" ]; then
@@ -13,5 +14,23 @@ if [ ! -f "$transaction_file" ]; then
     echo "Error: Transaction file does not exist: $transaction_file"
 fi
 
-# Remove the dollar sign from the transactions file
-sed -i 's/\$//g' "$transaction_file"
+gawk '
+
+BEGIN {
+    FS=","
+    OFS=","
+}
+
+NR > 1 {
+    if (prev == $1) {
+        print "Matched!"
+    } else {
+        print "No Match. :("
+    }
+}
+
+{
+    prev = $1
+}
+
+' "$transaction_file"

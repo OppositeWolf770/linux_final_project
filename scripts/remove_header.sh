@@ -1,6 +1,6 @@
 #!/bin/bash
 
-filename=$1
+transaction_file=$1
 
 # Remove header and "return" output
-sed -i '1d' "${filename}"
+sed -i '1d' "${transaction_file}"

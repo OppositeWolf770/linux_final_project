@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Parameters
-filename=$1
+transaction_file=$1
 
 # Extract the file from the archive
-bunzip2 -d "${filename}"
+bunzip2 -d "${transaction_file}"
 
 # Get the extracted filename and "return" it
-echo "${filename%.bz2}"
+echo "${transaction_file%.bz2}"
