@@ -25,7 +25,7 @@ gawk -v state_column=$state_column '
     {
         # Send invalid state formats to the exceptions file
         if ($state_column == "" || $state_column == "na") {
-            print $0 >> "exceptions.csv"
+            print $0 >> "exception.csv"
         # Otherwise print as normal
         } else {
             print $0
