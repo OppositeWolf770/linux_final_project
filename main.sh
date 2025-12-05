@@ -60,7 +60,7 @@ echo -e "\u2713 Summary file generated"
 echo -e "\u2713 Priority sorted summary file"
 
 # Generate transaction report
-
+./scripts/generate_transaction_report.sh "$transaction_file"
 echo -e "\u2713 Transaction report generated"
 
 # Generate purchase report
