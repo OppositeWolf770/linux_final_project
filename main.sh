@@ -54,7 +54,5 @@ echo "Sorted transaction file by customerID field"
 # Generate summary file
 summary_file=$("./scripts/generate_summary.sh" "$transaction_file")
 
-echo "$summary_file"
-
 # Exit with OK status
 exit 0

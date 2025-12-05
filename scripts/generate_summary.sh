@@ -19,18 +19,44 @@ gawk '
 BEGIN {
     FS=","
     OFS=","
+    prev_total = 0
 }
 
 NR > 1 {
+    # If the previous customerID matches current customerID
     if (prev == $1) {
-        print "Matched!"
+        # Increase previous total
+        prev_total = prev_total + prev_amt
+
+    # Otherwise
     } else {
-        print "No Match. :("
+        # Add record to output file
+        printf "%s,%s,%d,%s,%s,%f\n", prev, prev_state, prev_zip, prev_lastname, prev_firstname, prev_total
+
+        # Reset previous total
+        prev_total = 0
     }
 }
 
 {
-    prev = $1
+    # Update previous customer information with current customer information
+    # (Initialize if on first line)
+    prev = $1               # CustomerID
+    prev_amt = $6           # Purchase Amount
+    prev_state = $12        # State
+    prev_zip = $13          # Zip Code
+    prev_lastname = $3      # Last Name
+    prev_firstname = $2     # First Name
 }
 
-' "$transaction_file"
+END {
+    # Increase previous total
+    prev_total = prev_total + prev_amt
+
+    # Add final record to output file
+    printf "%s,%s,%d,%s,%s,%f\n", prev, prev_state, prev_zip, prev_lastname, prev_firstname, prev_total
+}
+
+' "$transaction_file" > "$summary_file"
+
+echo "$summary_file"
