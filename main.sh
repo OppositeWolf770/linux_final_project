@@ -17,11 +17,8 @@ fi
 
 # Fetch the file from the remote server
 # TODO: Uncomment this code in production
-# archive_fn=$(./scripts/fetch_remote.sh "$private_key" "$remote_server" "$remote_userid" "$remote_file")
+archive_fn=$(./scripts/fetch_remote.sh "$private_key" "$remote_server" "$remote_userid" "$remote_file")
 echo -e "\u2713 Transaction file retrieved from remote server"
-
-# TODO: Remove this in production
-archive_fn="MOCK_MIX_v2.1.csv.bz2"
 
 # Unzip the file and delete the zipped file
 transaction_file=$(./scripts/unzip_file.sh "$archive_fn")
@@ -64,7 +61,7 @@ echo -e "\u2713 Priority sorted summary file"
 echo -e "\u2713 Transaction report generated"
 
 # Generate purchase report
-
+./scripts/generate_purchase_report.sh "$transaction_file"
 echo -e "\u2713 Purchase report generated"
 
 # Exit with OK status

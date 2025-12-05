@@ -7,17 +7,21 @@ output_format="%-5s\t%-17s\n"
 
 # Validate input
 if [ -z "$transaction_file" ]; then
-    echo "usage: $0 <transaction_file>"
+    echo "usage: $0 <transaction_file>" >&2
     exit 1
 fi
 
 if [ ! -f "$transaction_file" ]; then
-    echo "($0) Error: Transaction file does not exist: $transaction_file"
+    echo "($0) Error: Transaction file does not exist: $transaction_file" >&2
     exit 1
 fi
 
 # Empty transaction_report if it already exists
-echo -n "" > "$transaction_report"
+
+if ! echo -n "" > "$transaction_report"; then
+    echo "($0) Error: Failed to empty transaction report file: $transaction_report" >&2
+    exit 1
+fi
 
 # Header lines
 echo "Report by: Daniel Hoelzeman" >> "$transaction_report"
@@ -33,10 +37,14 @@ cut -d "," -f 12 "$transaction_file" |\
     uniq -c |\
     # Sort the number of occurrences numerically in reverse order
     sort -k1nr |\
-
     # Format each line into transaction report
     gawk -v output_format="$output_format" '
     {
-        printf output_format, toupper($2), $1 >> "transaction.rpt"
+        printf output_format, toupper($2), $1
     }
-    '
+    ' >> "$transaction_report"
+
+    if [ $? -ne 0 ]; then
+        echo "($0) Error: Failed to generate transaction report" >&2
+        exit 1
+    fi
