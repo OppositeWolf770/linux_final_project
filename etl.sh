@@ -25,10 +25,8 @@ archive_fn=$(./scripts/fetch_remote.sh "$private_key" "$remote_server" "$remote_
 echo -e "\u2713 Transaction file retrieved from remote server"
 
 # Unzip the file and delete the zipped file
-# transaction_file=$(./scripts/unzip_file.sh "$archive_fn") || fail "Failed to unzip transaction file"
+transaction_file=$(./scripts/unzip_file.sh "$archive_fn") || fail "Failed to unzip transaction file"
 echo -e "\u2713 Transaction file unzipped"
-
-transaction_file="test.csv"
 
 # Remove the header from the transaction file
 ./scripts/remove_header.sh "$transaction_file" || fail "Failed to remove header"
